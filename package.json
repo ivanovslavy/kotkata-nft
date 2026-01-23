@@ -1,18 +1,55 @@
 {
   "name": "kotkata-nft",
   "version": "1.0.0",
-  "description": "",
+  "description": "Kotkata by GembaPay - A limited collection of 10,000 unique hand-drawn Sphynx cat NFTs",
   "main": "hardhat.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test:gas": "REPORT_GAS=true hardhat test",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network mainnet",
+    "deploy:bsc": "hardhat run scripts/deploy.js --network bsc",
+    "deploy:polygon": "hardhat run scripts/deploy.js --network polygon",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "verify:mainnet": "hardhat run scripts/verify.js --network mainnet",
+    "verify:bsc": "hardhat run scripts/verify.js --network bsc",
+    "verify:polygon": "hardhat run scripts/verify.js --network polygon",
+    "audit": "./audit-complete.sh",
+    "clean": "hardhat clean"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivanovslavy/kotkata-nft.git"
+  },
+  "keywords": [
+    "nft",
+    "erc721",
+    "erc721a",
+    "ethereum",
+    "polygon",
+    "bsc",
+    "solidity",
+    "smart-contract",
+    "gembapay",
+    "kotkata",
+    "sphynx-cat",
+    "generative-art"
+  ],
+  "author": "Slavcho Ivanov <slavy@gembapay.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ivanovslavy/kotkata-nft/issues"
+  },
+  "homepage": "https://gembapay.com/nft-gift",
   "type": "commonjs",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^6.1.0",
-    "hardhat": "^2.26.5"
+    "hardhat": "^2.26.5",
+    "solhint": "^4.5.0"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.4.0",

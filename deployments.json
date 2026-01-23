@@ -1,0 +1,48 @@
+{
+  "name": "Kotkata by GembaPay",
+  "symbol": "KOTKATA",
+  "maxSupply": 10000,
+  "royaltyBasisPoints": 500,
+  "royaltyReceiver": "0x8eB8Bf106EbC9834a2586D04F73866C7436Ce298",
+  "baseURI": "ipfs://bafybeiaoqjtxd7ptabsz67afmenvuf45tgqlwgorjttkaz7zxkmvjuoeqa/",
+  "ipfs": {
+    "images": {
+      "cid": "bafybeihblwcb2mp6cyjj3vmpm4agzdilpzx6ia7xahhubfqszkbzj3qvdm",
+      "gateway": "https://ipfs.filebase.io/ipfs/bafybeihblwcb2mp6cyjj3vmpm4agzdilpzx6ia7xahhubfqszkbzj3qvdm",
+      "provider": "Filebase"
+    },
+    "metadata": {
+      "cid": "bafybeiaoqjtxd7ptabsz67afmenvuf45tgqlwgorjttkaz7zxkmvjuoeqa",
+      "gateway": "https://ipfs.filebase.io/ipfs/bafybeiaoqjtxd7ptabsz67afmenvuf45tgqlwgorjttkaz7zxkmvjuoeqa",
+      "provider": "Filebase"
+    }
+  },
+  "deployments": {
+    "ethereum": {
+      "chainId": 1,
+      "address": "0xD24a89dc1686C2F88d33A70250473495459C564a",
+      "deployer": "0xc45112B334822811f4418e2f13C2C80FF790C949",
+      "blockNumber": 24298260,
+      "transactionHash": "0x16d13553c95270b5e6ce0f01d14fffbccba9332f34c58281875a66aed5eaa28e",
+      "explorer": "https://etherscan.io/address/0xD24a89dc1686C2F88d33A70250473495459C564a",
+      "verified": true
+    },
+    "bsc": {
+      "chainId": 56,
+      "address": "0x8Fee75865E8D87cdB844Ef5676D2D6456262BA7A",
+      "deployer": "0xc45112B334822811f4418e2f13C2C80FF790C949",
+      "blockNumber": 76968389,
+      "transactionHash": "0x15dbf88abfd2dda70a1d3b8f0b7e66ca8a4b10f8b6cd90d2fa97d1e9d278ee12",
+      "explorer": "https://bscscan.com/address/0x8Fee75865E8D87cdB844Ef5676D2D6456262BA7A",
+      "verified": true
+    },
+    "polygon": {
+      "chainId": 137,
+      "address": "0xD24a89dc1686C2F88d33A70250473495459C564a",
+      "deployer": "0xc45112B334822811f4418e2f13C2C80FF790C949",
+      "explorer": "https://polygonscan.com/address/0xD24a89dc1686C2F88d33A70250473495459C564a",
+      "verified": true
+    }
+  },
+  "deployedAt": "2026-01-23"
+}
