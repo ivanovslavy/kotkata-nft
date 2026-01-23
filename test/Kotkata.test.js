@@ -26,7 +26,7 @@ describe("Kotkata NFT Security Tests", function () {
     return { kotkata, owner, user1, user2, attacker, royaltyReceiver, MAX_SUPPLY, ROYALTY_BASIS_POINTS, BASE_URI };
   }
 
-  describe("🚀 Deployment", function () {
+  describe(" Deployment", function () {
     it("Should deploy with correct parameters", async function () {
       const { kotkata, owner, royaltyReceiver, MAX_SUPPLY, ROYALTY_BASIS_POINTS } = await loadFixture(deployKotkataFixture);
 
@@ -48,7 +48,7 @@ describe("Kotkata NFT Security Tests", function () {
     });
   });
 
-  describe("🎨 Minting", function () {
+  describe(" Minting", function () {
     it("Owner should mint successfully", async function () {
       const { kotkata, owner, user1 } = await loadFixture(deployKotkataFixture);
 
@@ -82,7 +82,7 @@ describe("Kotkata NFT Security Tests", function () {
     });
   });
 
-  describe("🔥 Burning", function () {
+  describe(" Burning", function () {
     it("Token owner should burn their token", async function () {
       const { kotkata, user1 } = await loadFixture(deployKotkataFixture);
 
@@ -107,8 +107,8 @@ describe("Kotkata NFT Security Tests", function () {
     });
   });
 
-  describe("🔐 Access Control Attacks", function () {
-    it("❌ ATTACK: Non-owner cannot mint", async function () {
+  describe(" Access Control Attacks", function () {
+    it(" ATTACK: Non-owner cannot mint", async function () {
       const { kotkata, attacker, user1 } = await loadFixture(deployKotkataFixture);
 
       await expect(
@@ -116,7 +116,7 @@ describe("Kotkata NFT Security Tests", function () {
       ).to.be.revertedWithCustomError(kotkata, "OwnableUnauthorizedAccount");
     });
 
-    it("❌ ATTACK: Non-owner cannot batch mint", async function () {
+    it(" ATTACK: Non-owner cannot batch mint", async function () {
       const { kotkata, attacker, user1 } = await loadFixture(deployKotkataFixture);
 
       await expect(
@@ -124,7 +124,7 @@ describe("Kotkata NFT Security Tests", function () {
       ).to.be.revertedWithCustomError(kotkata, "OwnableUnauthorizedAccount");
     });
 
-    it("❌ ATTACK: Non-owner cannot change royalty receiver", async function () {
+    it(" ATTACK: Non-owner cannot change royalty receiver", async function () {
       const { kotkata, attacker } = await loadFixture(deployKotkataFixture);
 
       await expect(
@@ -132,7 +132,7 @@ describe("Kotkata NFT Security Tests", function () {
       ).to.be.revertedWithCustomError(kotkata, "OwnableUnauthorizedAccount");
     });
 
-    it("❌ ATTACK: Non-owner cannot set contract URI", async function () {
+    it(" ATTACK: Non-owner cannot set contract URI", async function () {
       const { kotkata, attacker } = await loadFixture(deployKotkataFixture);
 
       await expect(
@@ -142,7 +142,7 @@ describe("Kotkata NFT Security Tests", function () {
   });
 
   describe("💣 Supply Manipulation Attacks", function () {
-    it("❌ ATTACK: Cannot mint beyond max supply", async function () {
+    it(" ATTACK: Cannot mint beyond max supply", async function () {
       const { kotkata, owner, user1, MAX_SUPPLY } = await loadFixture(deployKotkataFixture);
 
       // Mint до max supply
@@ -154,7 +154,7 @@ describe("Kotkata NFT Security Tests", function () {
       ).to.be.revertedWith("Max supply reached");
     });
 
-    it("❌ ATTACK: Cannot batch mint beyond max supply", async function () {
+    it(" ATTACK: Cannot batch mint beyond max supply", async function () {
       const { kotkata, user1, MAX_SUPPLY } = await loadFixture(deployKotkataFixture);
 
       await expect(
@@ -162,7 +162,7 @@ describe("Kotkata NFT Security Tests", function () {
       ).to.be.revertedWith("Would exceed max supply");
     });
 
-    it("❌ ATTACK: Cannot batch mint more than MAX_BATCH_SIZE", async function () {
+    it(" ATTACK: Cannot batch mint more than MAX_BATCH_SIZE", async function () {
       const { kotkata, user1 } = await loadFixture(deployKotkataFixture);
 
       await expect(
@@ -170,7 +170,7 @@ describe("Kotkata NFT Security Tests", function () {
       ).to.be.revertedWith("Exceeds max batch size");
     });
 
-    it("❌ ATTACK: Cannot mint to zero address", async function () {
+    it(" ATTACK: Cannot mint to zero address", async function () {
       const { kotkata } = await loadFixture(deployKotkataFixture);
 
       await expect(
@@ -180,7 +180,7 @@ describe("Kotkata NFT Security Tests", function () {
   });
 
   describe("🔄 Transfer & Approval Attacks", function () {
-    it("✅ Owner can transfer their token", async function () {
+    it(" Owner can transfer their token", async function () {
       const { kotkata, user1, user2 } = await loadFixture(deployKotkataFixture);
 
       await kotkata.mint(user1.address);
@@ -190,7 +190,7 @@ describe("Kotkata NFT Security Tests", function () {
       expect(await kotkata.ownerOf(0)).to.equal(user2.address);
     });
 
-    it("❌ ATTACK: Cannot transfer someone else's token without approval", async function () {
+    it(" ATTACK: Cannot transfer someone else's token without approval", async function () {
       const { kotkata, user1, attacker } = await loadFixture(deployKotkataFixture);
 
       await kotkata.mint(user1.address);
@@ -200,7 +200,7 @@ describe("Kotkata NFT Security Tests", function () {
       ).to.be.revertedWithCustomError(kotkata, "TransferCallerNotOwnerNorApproved");
     });
 
-    it("❌ ATTACK: Cannot burn someone else's token without approval", async function () {
+    it(" ATTACK: Cannot burn someone else's token without approval", async function () {
       const { kotkata, user1, attacker } = await loadFixture(deployKotkataFixture);
 
       await kotkata.mint(user1.address);
@@ -210,7 +210,7 @@ describe("Kotkata NFT Security Tests", function () {
       ).to.be.revertedWithCustomError(kotkata, "TransferCallerNotOwnerNorApproved");
     });
 
-    it("✅ Approved operator can transfer", async function () {
+    it(" Approved operator can transfer", async function () {
       const { kotkata, user1, user2 } = await loadFixture(deployKotkataFixture);
 
       await kotkata.mint(user1.address);
@@ -221,7 +221,7 @@ describe("Kotkata NFT Security Tests", function () {
       expect(await kotkata.ownerOf(0)).to.equal(user2.address);
     });
 
-    it("✅ Operator with setApprovalForAll can transfer multiple tokens", async function () {
+    it(" Operator with setApprovalForAll can transfer multiple tokens", async function () {
       const { kotkata, user1, user2 } = await loadFixture(deployKotkataFixture);
 
       await kotkata.batchMint(user1.address, 3);
@@ -234,8 +234,8 @@ describe("Kotkata NFT Security Tests", function () {
     });
   });
 
-  describe("🎭 Reentrancy Attack Simulation", function () {
-    it("✅ Reentrancy guard protects batch mint", async function () {
+  describe(" Reentrancy Attack Simulation", function () {
+    it(" Reentrancy guard protects batch mint", async function () {
       const { kotkata, user1 } = await loadFixture(deployKotkataFixture);
 
       await expect(kotkata.batchMint(user1.address, 5))
@@ -244,7 +244,7 @@ describe("Kotkata NFT Security Tests", function () {
       expect(await kotkata.totalMinted()).to.equal(5);
     });
 
-    it("✅ Multiple mints in sequence work correctly", async function () {
+    it(" Multiple mints in sequence work correctly", async function () {
       const { kotkata, user1, user2 } = await loadFixture(deployKotkataFixture);
 
       await kotkata.mint(user1.address);
@@ -255,8 +255,8 @@ describe("Kotkata NFT Security Tests", function () {
     });
   });
 
-  describe("💰 Royalty Manipulation Attacks", function () {
-    it("❌ ATTACK: Cannot set royalty receiver to zero address", async function () {
+  describe(" Royalty Manipulation Attacks", function () {
+    it(" ATTACK: Cannot set royalty receiver to zero address", async function () {
       const { kotkata } = await loadFixture(deployKotkataFixture);
 
       await expect(
@@ -264,7 +264,7 @@ describe("Kotkata NFT Security Tests", function () {
       ).to.be.revertedWith("Invalid royalty receiver");
     });
 
-    it("✅ Owner can change royalty receiver", async function () {
+    it(" Owner can change royalty receiver", async function () {
       const { kotkata, user1 } = await loadFixture(deployKotkataFixture);
 
       await expect(kotkata.setRoyaltyReceiver(user1.address))
@@ -274,7 +274,7 @@ describe("Kotkata NFT Security Tests", function () {
       expect(receiver).to.equal(user1.address);
     });
 
-    it("✅ Royalty percentage remains immutable after receiver change", async function () {
+    it(" Royalty percentage remains immutable after receiver change", async function () {
       const { kotkata, user1, ROYALTY_BASIS_POINTS } = await loadFixture(deployKotkataFixture);
 
       await kotkata.setRoyaltyReceiver(user1.address);
@@ -283,8 +283,8 @@ describe("Kotkata NFT Security Tests", function () {
     });
   });
 
-  describe("🧮 ERC721A Batch Ownership Tests", function () {
-    it("✅ Batch minted tokens have correct ownership", async function () {
+  describe(" ERC721A Batch Ownership Tests", function () {
+    it(" Batch minted tokens have correct ownership", async function () {
       const { kotkata, user1 } = await loadFixture(deployKotkataFixture);
 
       await kotkata.batchMint(user1.address, 5);
@@ -294,7 +294,7 @@ describe("Kotkata NFT Security Tests", function () {
       }
     });
 
-    it("✅ After transfer, new owner is tracked correctly", async function () {
+    it(" After transfer, new owner is tracked correctly", async function () {
       const { kotkata, user1, user2 } = await loadFixture(deployKotkataFixture);
 
       // Batch mint tokens 0-4
@@ -307,11 +307,11 @@ describe("Kotkata NFT Security Tests", function () {
       expect(await kotkata.ownerOf(0)).to.equal(user1.address);
       expect(await kotkata.ownerOf(1)).to.equal(user1.address);
       expect(await kotkata.ownerOf(2)).to.equal(user1.address);
-      expect(await kotkata.ownerOf(3)).to.equal(user2.address); // ✅ Променен
+      expect(await kotkata.ownerOf(3)).to.equal(user2.address); 
       expect(await kotkata.ownerOf(4)).to.equal(user1.address);
     });
 
-    it("✅ Multiple transfers work correctly", async function () {
+    it(" Multiple transfers work correctly", async function () {
       const { kotkata, user1, user2, attacker } = await loadFixture(deployKotkataFixture);
 
       await kotkata.batchMint(user1.address, 3);
@@ -326,8 +326,8 @@ describe("Kotkata NFT Security Tests", function () {
     });
   });
 
-  describe("📊 Supply Tracking", function () {
-    it("✅ Supply tracking works correctly with mints and burns", async function () {
+  describe(" Supply Tracking", function () {
+    it(" Supply tracking works correctly with mints and burns", async function () {
       const { kotkata, user1 } = await loadFixture(deployKotkataFixture);
 
       // Mint 10 tokens
@@ -348,8 +348,8 @@ describe("Kotkata NFT Security Tests", function () {
     });
   });
 
-  describe("🔍 Edge Cases", function () {
-    it("❌ Cannot query URI for non-existent token", async function () {
+  describe(" Edge Cases", function () {
+    it(" Cannot query URI for non-existent token", async function () {
       const { kotkata } = await loadFixture(deployKotkataFixture);
 
       await expect(
@@ -357,7 +357,7 @@ describe("Kotkata NFT Security Tests", function () {
       ).to.be.revertedWithCustomError(kotkata, "URIQueryForNonexistentToken");
     });
 
-    it("❌ Cannot batch mint with quantity 0", async function () {
+    it(" Cannot batch mint with quantity 0", async function () {
       const { kotkata, user1 } = await loadFixture(deployKotkataFixture);
 
       await expect(
@@ -365,7 +365,7 @@ describe("Kotkata NFT Security Tests", function () {
       ).to.be.revertedWith("Quantity must be greater than 0");
     });
 
-    it("✅ Can mint exactly to max supply", async function () {
+    it(" Can mint exactly to max supply", async function () {
       const { kotkata, user1, MAX_SUPPLY } = await loadFixture(deployKotkataFixture);
 
       await kotkata.batchMint(user1.address, MAX_SUPPLY);
@@ -375,8 +375,8 @@ describe("Kotkata NFT Security Tests", function () {
     });
   });
 
-  describe("🎯 Gas Efficiency Tests", function () {
-    it("✅ Batch mint is more gas efficient than individual mints", async function () {
+  describe(" Gas Efficiency Tests", function () {
+    it(" Batch mint is more gas efficient than individual mints", async function () {
       const { kotkata, user1 } = await loadFixture(deployKotkataFixture);
 
       // Individual mints
