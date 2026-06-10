@@ -43,3 +43,14 @@ build/
 # Misc
 *.bak
 *.tmp
+.env.*
+!.env.example
+*.key
+*.pem
+*mnemonic*
+keyring*
+.claude/
+CLAUDE.md
+claude.md
+progress.md
+PROGRESS.md
