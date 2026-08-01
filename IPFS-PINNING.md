@@ -51,27 +51,44 @@ Do **not** pass `--raw-leaves=false` or use CIDv0 — both produce a different C
 
 ## Node configuration applied
 
-- `ufw allow 4001/tcp` + `4001/udp` (v4 and v6) — was closed, the node could only reach the
-  network through circuit relays.
+- `ufw allow 4001/tcp` + `4001/udp` (v4 and v6) — was closed.
 - `Reprovider.Strategy = "roots"`, `Reprovider.Interval = "12h"` — the default `all` would try to
   announce all 23 370 blocks each cycle, which a Pi on a home line never finishes. Announcing the
-  4 roots is enough: a gateway finds the root and then bitswaps the subtree over the same connection.
+  4 roots is enough: a peer finds the root and then bitswaps the subtree over the same connection.
+- `Swarm.EnableHolePunching = true` (DCUtR) — explicit, since the node is behind NAT.
+- `net.core.rmem_max` / `wmem_max` raised to 7.5 MB in `/etc/sysctl.conf`; Kubo was logging a QUIC
+  warning that it could only get 416 KiB of the 7 MiB receive buffer it wanted.
 - API and Gateway stay bound to `127.0.0.1` (`5001` / `8080`). The `ufw` rule allowing 5001 from
-  anywhere is inert because nothing listens on the public interface — leave it or tighten it, but
-  it is not an exposure.
+  anywhere is inert because nothing listens on the public interface.
 
-## Known weakness
+**Do not enable `Routing.AcceleratedDHTClient`.** It was tried on 2026-08-01 and made things
+distinctly worse: CPU went to 109 %, RSS to 436 MB, and the peer count collapsed from ~140 to 16.
+It has been set back to `false`.
 
-The router does **not** forward port 4001 to the Pi, so the node still advertises only
-`/p2p-circuit` relay addresses and has no directly dialable address. Retrieval works, but a small
-share of first-time fetches time out on public gateways and succeed on retry.
+## The open problem: no inbound connectivity
 
-Fixes, best first:
+The Pi has **no directly dialable address** — inbound port 4001 is blocked on IPv4 (the router
+forwards 22 and 80 to the Pi but not 4001) *and* on IPv6 (verified by dialing
+`[2a00:4805:8800:1ecc:2ecf:67ff:fe6d:d5ed]:4001` from an external host). The router exposes no
+UPnP IGD, so the mapping cannot be created from the Pi itself. The node therefore advertises only
+`/p2p-circuit` relay addresses.
 
-1. Forward TCP+UDP 4001 to the Pi on the router (the Pi is `192.168.1.100` on the LAN). It already
-   has a global IPv6 address, so allowing inbound 4001 over IPv6 achieves the same thing.
-2. Add a second, independent pin. The testnet collection is only **71 MB** — it fits in any free
-   tier several times over. A single provider is exactly what caused this outage.
+Consequence, measured on 2026-08-01:
+
+- A real IPFS node reaches it fine. From an unrelated public server: the DHT lists the Pi among the
+  providers, `ipfs swarm connect` succeeds, and `ipfs cat /ipfs/<cid>/068.json` returns the file.
+- Public **HTTP gateways** mostly time out — `ipfs.io`, `dweb.link`, `4everland` and `flk-ipfs`
+  all returned 504/52x on files they had not cached before. Their connect timeouts are shorter than
+  a relay + hole-punch handshake to a NAT'd node takes.
+
+So the data is genuinely published and retrievable, but wallets that resolve `ipfs://` through a
+public gateway will often see nothing. **Forwarding TCP+UDP 4001 to `192.168.1.100` on the router
+is what closes this** — the same thing already done for 22 and 80. Allowing inbound 4001 over the
+Pi's global IPv6 address works equally well.
+
+Second, independent of the above: the testnet collection is only **71 MB** and currently has
+exactly one pin, on an SD card. A second pin anywhere else is cheap insurance against a repeat of
+the outage this file documents.
 
 ## Verification
 
@@ -81,7 +98,12 @@ curl -s -X POST https://ethereum-sepolia-rpc.publicnode.com -H 'Content-Type: ap
   -d '{"jsonrpc":"2.0","id":1,"method":"eth_call","params":[{"to":"0x79034E34db7787dCAF131EF53d161e47Af810242","data":"0xc87b56dd0000000000000000000000000000000000000000000000000000000000000061"},"latest"]}'
 # -> ipfs://bafybeifqku3ou4…/097.json
 curl -sL https://ipfs.io/ipfs/bafybeifqku3ou4qe3swdo3flcdd6fuyxfyjrlbskyahn7tdahkodmjtwwm/097.json
+
+# the honest test — from a real IPFS node, not a gateway
+ipfs routing findprovs -n 5 bafybeifqku3ou4qe3swdo3flcdd6fuyxfyjrlbskyahn7tdahkodmjtwwm
+ipfs cat /ipfs/bafybeifqku3ou4qe3swdo3flcdd6fuyxfyjrlbskyahn7tdahkodmjtwwm/068.json
 ```
 
-Verified 2026-08-01: all four CIDs return byte-identical content through both `ipfs.io` and
-`dweb.link`, and the full chain → metadata → image path resolves for Sepolia token #97.
+Verified 2026-08-01: content is byte-identical to the local originals for every file checked, over
+both gateways and direct IPFS fetches; the full chain → metadata → image path resolves for Sepolia
+token #97. Gateway *availability* remains intermittent until 4001 is reachable.
